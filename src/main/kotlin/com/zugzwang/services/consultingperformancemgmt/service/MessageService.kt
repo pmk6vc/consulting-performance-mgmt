@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 @Service
-class MessageService(@Qualifier("alternative") private val messageRepository: MessageRepository) {
+class MessageService(@Qualifier("basic") private val messageRepository: MessageRepository) {
 
     fun getMessagesFromSource() = messageRepository.getMessages()
 

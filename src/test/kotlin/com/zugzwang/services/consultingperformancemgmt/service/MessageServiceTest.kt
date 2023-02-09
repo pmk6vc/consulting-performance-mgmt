@@ -14,7 +14,7 @@ private class MessageServiceTest {
     @Test
     fun `should get messages from repository`() {
         every { mockMessageRepository.getMessages() } returns emptyList()
-        val messages = messageService.getMessagesFromSource()
+        messageService.getMessagesFromSource()
         verify(exactly = 1) { mockMessageRepository.getMessages() }
     }
 }
