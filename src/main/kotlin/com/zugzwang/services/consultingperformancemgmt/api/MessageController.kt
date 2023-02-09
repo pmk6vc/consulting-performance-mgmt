@@ -15,6 +15,6 @@ class MessageController(private val messageService: MessageService) {
     fun getHelloWorld() = Message(UUID.randomUUID(), "Hello, world!")
 
     @GetMapping("messages-from-service")
-    fun getMessagesFromService(): List<Message> = messageService.getMessagesFromSource()
+    fun getMessagesFromService(): List<Message> = messageService.getMessagesFromRepository()
 
 }

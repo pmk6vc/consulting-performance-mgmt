@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service
 @Service
 class MessageService(@Qualifier("basic") private val messageRepository: MessageRepository) {
 
-    fun getMessagesFromSource() = messageRepository.getMessages()
+    fun getMessagesFromRepository() = messageRepository.getMessages()
 
 }
