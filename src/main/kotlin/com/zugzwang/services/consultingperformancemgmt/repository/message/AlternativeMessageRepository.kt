@@ -4,12 +4,12 @@ import com.zugzwang.services.consultingperformancemgmt.model.Message
 import org.springframework.stereotype.Repository
 import java.util.*
 
-@Repository("basic")
-class BasicMessageRepository : MessageRepository {
+@Repository("alternative")
+class AlternativeMessageRepository: MessageRepository {
 
     override fun getMessages(): List<Message> {
         return listOf(
-            Message(UUID.randomUUID(), "Hello"),
+            Message(UUID.randomUUID(), "Goodbye"),
             Message(UUID.randomUUID(), "World")
         )
     }
