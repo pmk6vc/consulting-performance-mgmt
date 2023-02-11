@@ -1,4 +1,4 @@
-package com.zugzwang.services.consultingperformancemgmt.api
+package com.zugzwang.services.consultingperformancemgmt.controller
 
 import com.zugzwang.services.consultingperformancemgmt.model.Message
 import com.zugzwang.services.consultingperformancemgmt.service.MessageService
