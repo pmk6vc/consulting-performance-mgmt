@@ -19,7 +19,7 @@ abstract class AbstractIntegrationTest {
     companion object {
         // TODO: Match postgres image with what is used in deployment
         @Container // Annotate containers to manage lifecycle - not sure if this is necessary (tests work fine without it)
-        private val pgContainer = PostgreSQLContainer("postgres:latest").apply {
+        private val pgContainer = PostgreSQLContainer("postgres:14-alpine").apply {
             withDatabaseName("postgres")
             withUsername("postgres")
             withPassword("postgres")

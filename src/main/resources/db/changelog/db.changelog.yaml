@@ -1,0 +1,29 @@
+databaseChangeLog:
+  -  changeSet:
+       id:  1
+       author:  prathameshk
+       changes:
+         -  createTable:
+              tableName:  messages
+              columns:
+                -  column:
+                     name:  id
+                     type:  uuid
+                     defaultValueComputed: gen_random_uuid()
+                     constraints:
+                       primaryKey:  true
+                       nullable:  false
+                -  column:
+                     name:  msg
+                     type:  varchar(255)
+
+  - changeSet:
+      id: 2
+      author: prathameshk
+      changes:
+        - insert:
+            tableName: messages
+            columns:
+              - column:
+                  name: msg
+                  value: Hello from Liquibase!
