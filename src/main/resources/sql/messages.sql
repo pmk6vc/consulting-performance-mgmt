@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS messages(
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY NOT NULL,
+    msg VARCHAR NOT NULL
+);
