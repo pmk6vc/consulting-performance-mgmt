@@ -9,6 +9,8 @@ RUN mvn -f pom.xml clean package -Dmaven.test.skip
 # Use built JAR to start service
 FROM amazoncorretto:17-alpine
 COPY --from=build /app/target/consulting-performance-mgmt-0.0.1-SNAPSHOT.jar /app/target/consulting-performance-mgmt-0.0.1-SNAPSHOT.jar
-# TODO: Figure out how to link this to the exposed port in application.properties
-EXPOSE 8000
+# Set Spring server port based on env variable (useful to connect docker-compose and Dockerfile with single env config)
+ARG SERVER_PORT
+ENV SERVER_PORT=$SERVER_PORT
+EXPOSE $SERVER_PORT
 ENTRYPOINT ["java","-jar","/app/target/consulting-performance-mgmt-0.0.1-SNAPSHOT.jar"]

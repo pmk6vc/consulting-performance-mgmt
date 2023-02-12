@@ -21,9 +21,10 @@ services:
     image: 'docker-spring-boot-postgres:latest'
     build:
       context: .
+      args:
+        - SERVER_PORT=$SERVER_PORT
     ports:
-      # TODO: Figure out how to keep consistent with application.properties and Dockerfile
-      - "8000:8000"
+      - "3000:${SERVER_PORT}"
     container_name: app
     depends_on:
       postgres-db:
