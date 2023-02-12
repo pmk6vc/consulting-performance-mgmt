@@ -24,7 +24,7 @@ private class MessageControllerTest : AbstractIntegrationTest() {
     fun `should apply configured properties`() {
         // Note: Production properties in classPath still seem to apply in test if not overridden
         assertEquals("org.postgresql.Driver", datasourceDriver)
-        assertEquals("8002", serverPort)
+        assertEquals("8001", serverPort)
     }
 
     @Test
