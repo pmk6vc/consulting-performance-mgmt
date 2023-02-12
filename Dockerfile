@@ -12,4 +12,3 @@ COPY --from=build /app/target/consulting-performance-mgmt-0.0.1-SNAPSHOT.jar /ap
 # TODO: Figure out how to link this to the exposed port in application.properties
 EXPOSE 8000
 ENTRYPOINT ["java","-jar","/app/target/consulting-performance-mgmt-0.0.1-SNAPSHOT.jar"]
-#ENTRYPOINT ["sleep", "infinity"]
