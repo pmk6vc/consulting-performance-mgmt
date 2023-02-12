@@ -9,6 +9,11 @@ services:
       - POSTGRES_USER=postgres-user
       - POSTGRES_PASSWORD=postgres-password
       - POSTGRES_DB=postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres-user -d postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     image: 'docker-spring-boot-postgres:latest'
@@ -19,7 +24,8 @@ services:
       - "8000:8000"
     container_name: app
     depends_on:
-      - postgres-db
+      postgres-db:
+        condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pgdb:5432/postgres
       - SPRING_DATASOURCE_USERNAME=postgres-user
