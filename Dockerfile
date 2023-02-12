@@ -3,7 +3,6 @@ FROM maven:3.8.7-amazoncorretto-17 AS build
 WORKDIR /app
 COPY pom.xml ./
 COPY src ./src
-# TODO: Figure out if it's possible to run tests here (or in a different part of CICD pipeline)
 RUN mvn -f pom.xml clean package -Dmaven.test.skip
 
 # Use built JAR to start service

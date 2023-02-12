@@ -19,4 +19,4 @@ jobs:
           cache: maven
 
       - name: Run the Maven verify phase
-        run: mvn --batch-mode --update-snapshots -Dmaven.test.failure.ignore=true verify
+        run: mvn --batch-mode --update-snapshots --fail-at-end verify
