@@ -1,7 +1,6 @@
 package com.zugzwang.services.consultingperformancemgmt.controller
 
 import com.zugzwang.services.consultingperformancemgmt.util.AbstractIntegrationTest
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -12,13 +11,6 @@ private class MessageControllerTest : AbstractIntegrationTest() {
 
     @Autowired // Use Spring DI to create MVC
     private lateinit var mockMvc: MockMvc // Enable hitting controller without actually making HTTP requests
-
-    companion object {
-        @BeforeAll
-        fun setup() {
-            pgContainer.start()
-        }
-    }
 
     @Test
     fun `should get sample hello world message`() {
