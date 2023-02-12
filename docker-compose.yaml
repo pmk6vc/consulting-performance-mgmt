@@ -1,6 +1,14 @@
 version: '3.9'
 
 services:
+  postgres-db:
+    image: 'postgres:14-alpine'
+    container_name: pgdb
+    environment:
+      - POSTGRES_USER=postgres-user
+      - POSTGRES_PASSWORD=postgres-password
+      - POSTGRES_DB=postgres
+
   app:
     image: 'docker-spring-boot-postgres:latest'
     build:
@@ -10,15 +18,8 @@ services:
       - "8000:8000"
     container_name: app
     depends_on:
-      - db
+      - postgres-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
-      - SPRING_DATASOURCE_USERNAME=compose-postgres
-      - SPRING_DATASOURCE_PASSWORD=compose-postgres
-
-  db:
-    image: 'postgres:14-alpine'
-    container_name: db
-    environment:
-      - POSTGRES_USER=compose-postgres
-      - POSTGRES_PASSWORD=compose-postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pgdb:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres-user
+      - SPRING_DATASOURCE_PASSWORD=postgres-password
