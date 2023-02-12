@@ -1,16 +1,17 @@
 version: '3.9'
 
 # Note - changing username / password / db might require you to delete old images / containers first
+# Note - can introspect DB by entering 'psql -U ${LOCAL_POSTGRES_USER} -d ${LOCAL_POSTGRES_DB}' in pg container shell
 services:
   postgres-db:
     image: 'postgres:14-alpine'
     container_name: pgdb
     environment:
-      - POSTGRES_USER=postgres-user
-      - POSTGRES_PASSWORD=postgres-password
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${LOCAL_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${LOCAL_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${LOCAL_POSTGRES_DB}
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres-user -d postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${LOCAL_POSTGRES_USER} -d ${LOCAL_POSTGRES_DB}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,6 +28,6 @@ services:
       postgres-db:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://pgdb:5432/postgres
-      - SPRING_DATASOURCE_USERNAME=postgres-user
-      - SPRING_DATASOURCE_PASSWORD=postgres-password
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pgdb:5432/${LOCAL_POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${LOCAL_POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${LOCAL_POSTGRES_PASSWORD}
