@@ -14,17 +14,17 @@ private class MessageControllerTest : AbstractIntegrationTest() {
     @Autowired // Use Spring DI to create MVC
     private lateinit var mockMvc: MockMvc // Enable hitting controller without actually making HTTP requests
 
+    @Value("\${spring.datasource.driver-class-name}")
+    lateinit var datasourceDriver: String
+
     @Value("\${server.port}")
     lateinit var serverPort: String
-
-    @Value("\${spring.sql.init.mode}")
-    lateinit var sqlInitMode: String
 
     @Test
     fun `should apply configured properties`() {
         // Note: Production properties in classPath still seem to apply in test if not overridden
-        assertEquals("8000", serverPort)
-        assertEquals("always", sqlInitMode)
+        assertEquals("org.postgresql.Driver", datasourceDriver)
+        assertEquals("8001", serverPort)
     }
 
     @Test
