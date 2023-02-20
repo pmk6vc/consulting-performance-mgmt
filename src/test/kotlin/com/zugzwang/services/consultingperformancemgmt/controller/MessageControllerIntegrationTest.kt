@@ -1,6 +1,7 @@
 package com.zugzwang.services.consultingperformancemgmt.controller
 
 import com.zugzwang.services.consultingperformancemgmt.util.AbstractIntegrationTest
+import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,7 +37,25 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
                 status { isOk() }
                 content {
                     contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.msg") { value("Hello, world!") }
+                    jsonPath("$.msg") {
+                        value("Hello, world!")
+                    }
+                }
+            }
+    }
+
+    @Test
+    fun `should get message from database`() {
+        mockMvc
+            .get("/messages/messages-from-service")
+            .andDo { print() }
+            .andExpectAll {
+                status { isOk() }
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    jsonPath("$[*].msg") {
+                        value("Hello from Liquibase!")
+                    }
                 }
             }
     }

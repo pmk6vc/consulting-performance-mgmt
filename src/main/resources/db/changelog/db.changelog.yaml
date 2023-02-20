@@ -14,7 +14,7 @@ databaseChangeLog:
                        primaryKey:  true
                        nullable:  false
                 -  column:
-                     name:  message_content
+                     name:  msg
                      type:  varchar(255)
 
   - changeSet:
@@ -25,5 +25,5 @@ databaseChangeLog:
             tableName: messages
             columns:
               - column:
-                  name: message_content
+                  name: msg
                   value: Hello from Liquibase!
