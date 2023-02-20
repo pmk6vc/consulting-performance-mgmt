@@ -1,8 +1,9 @@
 version: '3.9'
 
-# Note - inject env vars at runtime by entering 'docker-compose --env-file .env.local up [-d]'
-# Note - can introspect DB by entering 'psql -U ${LOCAL_POSTGRES_USER} -d ${LOCAL_POSTGRES_DB}' in pg container shell
+# Inject env vars at runtime by entering 'docker-compose --env-file .env.local up [-d]'
+# Can introspect DB by entering 'psql -U ${LOCAL_POSTGRES_USER} -d ${LOCAL_POSTGRES_DB}' in pg container shell
 # Note - changing username / password / db might require you to delete old images / containers first
+# Alternatively can run 'docker-compose --env-file .env.local up -d --force-recreate --renew-anon-volumes'
 services:
   postgres-db:
     image: 'postgres:14-alpine'

@@ -10,7 +10,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 
-@SpringBootTest // Do integration tests with the service actually spun up
+@SpringBootTest // Perform integration tests with the service actually spun up
 @AutoConfigureMockMvc // Use Spring DI to instantiate underlying MVC web framework object
 @EnableConfigurationProperties // Apply configuration properties in test class
 @TestPropertySource(locations = ["classpath:application-test.properties"]) // Point to test overrides
