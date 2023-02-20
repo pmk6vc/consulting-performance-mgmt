@@ -52,6 +52,7 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
             .andExpectAll {
                 status { isOk() }
                 content {
+                    // TODO: Figure out the right way of testing array response - so far everything passes, even wrong stuff
                     contentType(MediaType.APPLICATION_JSON)
                     jsonPath("$[*].msg") {
                         value("Hello from Liquibase!")
