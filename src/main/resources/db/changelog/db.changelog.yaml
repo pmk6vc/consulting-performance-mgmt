@@ -27,3 +27,9 @@ databaseChangeLog:
               - column:
                   name: msg
                   value: Hello from Liquibase!
+        - insert:
+            tableName: messages
+            columns:
+              - column:
+                  name: msg
+                  value: Goodbye from Liquibase!

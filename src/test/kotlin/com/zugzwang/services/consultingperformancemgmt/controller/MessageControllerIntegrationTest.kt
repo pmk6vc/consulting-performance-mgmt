@@ -1,7 +1,10 @@
 package com.zugzwang.services.consultingperformancemgmt.controller
 
 import com.zugzwang.services.consultingperformancemgmt.util.AbstractIntegrationTest
-import org.hamcrest.Matchers.hasSize
+import io.mockk.InternalPlatformDsl.toStr
+import kotlinx.serialization.json.*
+import org.hamcrest.Matchers
+import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,6 +35,7 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
     fun `should get sample hello world message`() {
         mockMvc
             .get("/messages/hello-world-message")
+            .andExpect { jsonPath("$") {} }
             .andDo { print() }
             .andExpectAll {
                 status { isOk() }
@@ -45,18 +49,25 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `should get message from database`() {
+    fun `should get messages from database`() {
+        val expectedJson = buildJsonArray {
+            addJsonObject { put("msg", "Hello from Liquibase!") }
+            addJsonObject { put("msg", "Goodbye from Liquibase!") }
+        }
         mockMvc
             .get("/messages/messages-from-service")
             .andDo { print() }
             .andExpectAll {
                 status { isOk() }
                 content {
-                    // TODO: Figure out the right way of testing array response - so far everything passes, even wrong stuff
                     contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$[*].msg") {
-                        value("Hello from Liquibase!")
+                    jsonPath("$") {
+                        isArray()
                     }
+                    jsonPath("$.length()") {
+                        value(2)
+                    }
+                    json(expectedJson.toString())
                 }
             }
     }
