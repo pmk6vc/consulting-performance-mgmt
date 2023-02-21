@@ -6,7 +6,6 @@ import org.springframework.data.repository.CrudRepository
 import java.util.UUID
 
 
-// TODO: Not sure how this is instantiated by Spring DI
 interface MessageCrudRepository: CrudRepository<Message, UUID> {
 
     // TODO: Don't hardcode table name

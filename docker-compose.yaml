@@ -6,6 +6,7 @@ version: '3.9'
 # Alternatively can run 'docker-compose --env-file .env.local up -d --force-recreate --renew-anon-volumes'
 services:
   postgres-db:
+    # TODO: Match postgres image with what is used in deployment
     image: 'postgres:14-alpine'
     container_name: pgdb
     environment:
