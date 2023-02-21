@@ -10,6 +10,8 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
+// TODO: Need to run tests serially to avoid concurrent connections to DB / race conditions across test cases
+// TODO: Need to restart test container and apply liquibase migrations before each test
 private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired // Use Spring DI to create MVC
