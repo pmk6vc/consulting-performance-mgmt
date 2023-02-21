@@ -26,7 +26,6 @@ abstract class AbstractIntegrationTest {
             withUsername("postgres")
             withPassword("postgres")
             withExposedPorts(5432)
-            start()
         }
 
         @JvmStatic
