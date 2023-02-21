@@ -17,6 +17,7 @@ databaseChangeLog:
                      name:  message_content
                      type:  varchar(255)
 
+  # TODO: Migrate each changeset to its own file and reference file in master changeset
   - changeSet:
       id: 2
       author: prathameshk
