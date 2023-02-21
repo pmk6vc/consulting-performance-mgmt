@@ -14,9 +14,10 @@ databaseChangeLog:
                        primaryKey:  true
                        nullable:  false
                 -  column:
-                     name:  msg
+                     name:  message_content
                      type:  varchar(255)
 
+  # TODO: Migrate each changeset to its own file and reference file in master changeset
   - changeSet:
       id: 2
       author: prathameshk
@@ -25,5 +26,11 @@ databaseChangeLog:
             tableName: messages
             columns:
               - column:
-                  name: msg
+                  name: message_content
                   value: Hello from Liquibase!
+        - insert:
+            tableName: messages
+            columns:
+              - column:
+                  name: message_content
+                  value: Goodbye from Liquibase!

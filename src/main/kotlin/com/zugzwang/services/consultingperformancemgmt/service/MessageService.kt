@@ -1,12 +1,14 @@
 package com.zugzwang.services.consultingperformancemgmt.service
 
-import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageRepository
-import org.springframework.beans.factory.annotation.Qualifier
+import com.zugzwang.services.consultingperformancemgmt.model.Message
+import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageCrudRepository
 import org.springframework.stereotype.Service
 
 @Service
-class MessageService(@Qualifier("basic") private val messageRepository: MessageRepository) {
+class MessageService(private val messageRepository: MessageCrudRepository) {
 
-    fun getMessagesFromRepository() = messageRepository.getMessages()
+    fun getMessagesFromRepository() = messageRepository.list()
+
+    fun post(message: Message) = messageRepository.save(message)
 
 }
