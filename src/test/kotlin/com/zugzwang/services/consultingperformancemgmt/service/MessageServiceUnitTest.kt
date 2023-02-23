@@ -12,7 +12,7 @@ private class MessageServiceTest {
 
     @Test
     fun `should get messages from repository`() {
-        messageService.getMessagesFromRepository()
-        verify(exactly = 1) { mockMessageCrudRepository.list() }
+        messageService.getAllMessages()
+        verify(exactly = 1) { mockMessageCrudRepository.findAll() }
     }
 }
