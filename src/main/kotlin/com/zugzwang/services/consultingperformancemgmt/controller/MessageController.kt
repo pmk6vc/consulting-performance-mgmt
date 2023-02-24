@@ -10,20 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
-const val REQUEST_MAPPING_ROUTE = "messages"
+const val MESSAGES_REQUEST_MAPPING_ROUTE = "messages"
 
 @RestController
-@RequestMapping(REQUEST_MAPPING_ROUTE)
+@RequestMapping(MESSAGES_REQUEST_MAPPING_ROUTE)
 class MessageController(private val messageService: MessageService) {
 
-    @GetMapping("messages-from-service")
+    @GetMapping
     fun getMessages(): Iterable<Message> = messageService.getAllMessages()
 
-    // TODO: Add test coverage for this method
-    @PostMapping("post-messages")
-    fun postMessage(@RequestBody message: Message) = messageService.post(message)
-
-    @GetMapping("messages-from-service/{messageId}")
+    @GetMapping("{messageId}")
     fun getMessageById(@PathVariable messageId: String) = messageService.getMessageById(UUID.fromString(messageId))
+
+    @PostMapping
+    fun postMessage(@RequestBody message: Message) = messageService.post(message)
 
 }
