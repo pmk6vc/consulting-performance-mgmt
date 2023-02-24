@@ -1,5 +1,9 @@
 package com.zugzwang.services.consultingperformancemgmt.controller
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.zugzwang.services.consultingperformancemgmt.model.Message
+import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageCrudRepository
 import com.zugzwang.services.consultingperformancemgmt.util.AbstractIntegrationTest
 import kotlinx.serialization.json.*
 import org.junit.jupiter.api.Assertions.*
@@ -11,23 +15,24 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import java.nio.charset.StandardCharsets
 
 private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired // Use Spring DI to create MVC
     private lateinit var mockMvc: MockMvc // Enable hitting controller without actually making HTTP requests
 
+    @Autowired
+    private lateinit var messageRepository: MessageCrudRepository
+
+    private val mapper = jacksonObjectMapper()
+
     @Nested
     @DisplayName("Get messages")
     inner class GetMessages {
 
         @Test
-        fun `should get initial messages from database`() {
-            val expectedJson = buildJsonArray {
-                addJsonObject { put("msg", "Hello from Liquibase!") }
-                addJsonObject { put("msg", "Goodbye from Liquibase!") }
-            }
+        fun `should get all messages`() {
+            val expectedJsonList = messageRepository.findAll().map { mapper.writeValueAsString(it) }
             mockMvc
                 .get("/messages/messages-from-service")
                 .andDo { print() }
@@ -39,31 +44,33 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
                             isArray()
                         }
                         jsonPath("$.length()") {
-                            value(2)
+                            value(expectedJsonList.size)
                         }
-                        json(expectedJson.toString())
+                        json(expectedJsonList.toString())
                     }
                 }
         }
 
         @Test
         fun `should get specific message`() {
-            val messageId = 1234
-            mockMvc
-                .get("/messages/messages-from-service/$messageId")
+            val expectedMessage = messageRepository.findAll().first()
+            val expectedJson = mapper.writeValueAsString(expectedMessage)
+            val response = mockMvc
+                .get("/messages/messages-from-service/${expectedMessage.id}")
                 .andDo { print() }
                 .andExpectAll {
                     status { isOk() }
                     content {
-                        contentType(MediaType(MediaType.TEXT_PLAIN, StandardCharsets.UTF_8))
-                        string("Get message $messageId")
+                        contentType(MediaType.APPLICATION_JSON)
+                        json(expectedJson)
                     }
                 }
+                .andReturn()
+            val actualMessage: Message = jacksonObjectMapper().readValue(response.response.contentAsString)
+            assertEquals(expectedMessage, actualMessage)
         }
 
     }
-
-
 
     @Test
     fun `should post message to database`() {

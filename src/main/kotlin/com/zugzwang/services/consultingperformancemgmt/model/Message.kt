@@ -7,6 +7,6 @@ import java.util.UUID
 
 @Table("messages")
 data class Message(
-    @Id private val id: UUID?,
+    @Id val id: UUID,
     @Column("message_content") val msg: String
 )

@@ -23,8 +23,7 @@ class MessageController(private val messageService: MessageService) {
     @PostMapping("post-messages")
     fun postMessage(@RequestBody message: Message) = messageService.post(message)
 
-    // TODO: Add test coverage for this method
     @GetMapping("messages-from-service/{messageId}")
-    fun getMessageById(@PathVariable messageId: String) = "Get message $messageId"
+    fun getMessageById(@PathVariable messageId: String) = messageService.getMessageById(UUID.fromString(messageId))
 
 }

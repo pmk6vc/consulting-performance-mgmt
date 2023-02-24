@@ -1,7 +1,9 @@
 package com.zugzwang.services.consultingperformancemgmt
 
+import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageCrudRepository
 import com.zugzwang.services.consultingperformancemgmt.util.AbstractIntegrationTest
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
@@ -13,6 +15,9 @@ class ConsultingPerformanceMgmtApplicationTests : AbstractIntegrationTest() {
 
 	@Autowired // Use Spring DI to create MVC
 	private lateinit var mockMvc: MockMvc // Enable hitting controller without actually making HTTP requests
+
+	@Autowired
+	private lateinit var messageRepository: MessageCrudRepository
 
 	@Nested
 	@DisplayName("Spring config")
@@ -31,8 +36,18 @@ class ConsultingPerformanceMgmtApplicationTests : AbstractIntegrationTest() {
 		@Test
 		fun `should apply configured properties`() {
 			// Note: Production properties in classPath still seem to apply in test if not overridden
-			Assertions.assertEquals("org.postgresql.Driver", datasourceDriver)
-			Assertions.assertEquals("8001", serverPort)
+			assertEquals("org.postgresql.Driver", datasourceDriver)
+			assertEquals("8001", serverPort)
+		}
+
+		@Test
+		fun `should run liquibase migrations and seed with initial data`() {
+			val expectedMessages = setOf(
+				"Hello from Liquibase!",
+				"Goodbye from Liquibase!"
+			)
+			val actualMessages = messageRepository.findAll().map { it.msg }.toSet()
+			assertEquals(expectedMessages, actualMessages)
 		}
 
 	}
