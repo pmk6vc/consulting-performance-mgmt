@@ -5,7 +5,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 
-private class MessageServiceTest {
+private class MessageServiceUnitTest {
 
     private val mockMessageCrudRepository = mockk<MessageCrudRepository>(relaxed = true)
     private val messageService = MessageService(mockMessageCrudRepository)

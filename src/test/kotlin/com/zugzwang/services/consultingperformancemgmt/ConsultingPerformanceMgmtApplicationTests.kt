@@ -1,7 +1,12 @@
 package com.zugzwang.services.consultingperformancemgmt
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.zugzwang.services.consultingperformancemgmt.controller.MainController
 import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageCrudRepository
 import com.zugzwang.services.consultingperformancemgmt.util.AbstractIntegrationTest
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.springframework.beans.factory.annotation.Autowired
@@ -56,6 +61,8 @@ class ConsultingPerformanceMgmtApplicationTests : AbstractIntegrationTest() {
 	@DisplayName("Health checks")
 	inner class HealthChecks {
 
+		private val mapper = jacksonObjectMapper()
+
 		@Test
 		fun `should ping`() {
 			mockMvc
@@ -68,6 +75,29 @@ class ConsultingPerformanceMgmtApplicationTests : AbstractIntegrationTest() {
 						string("Ping! I'm healthy!")
 					}
 				}
+		}
+
+		@Test
+		fun `should decode JSON response to data class predictably`() {
+			val data = 10
+			val obj = MainController.Companion.Sample(data)
+			val expectedEncoded = buildJsonObject {
+				put("data", data)
+			}
+			val response = mockMvc
+				.get("/_ping/$data")
+				.andDo { print() }
+				.andExpectAll {
+					status { isOk() }
+					content {
+						contentType(MediaType.APPLICATION_JSON)
+						json(mapper.writeValueAsString(obj))
+						json(expectedEncoded.toString())
+					}
+				}
+				.andReturn()
+			val decoded: MainController.Companion.Sample = mapper.readValue(response.response.contentAsString)
+			assertEquals(obj, decoded)
 		}
 
 	}
