@@ -2,7 +2,8 @@ package com.zugzwang.services.consultingperformancemgmt
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.zugzwang.services.consultingperformancemgmt.controller.MainController
+import com.zugzwang.services.consultingperformancemgmt.controller.HEALTH_CHECKS_REQUEST_MAPPING_ROUTE
+import com.zugzwang.services.consultingperformancemgmt.controller.HealthChecksController
 import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageCrudRepository
 import com.zugzwang.services.consultingperformancemgmt.util.AbstractIntegrationTest
 import kotlinx.serialization.json.buildJsonObject
@@ -62,11 +63,12 @@ class ConsultingPerformanceMgmtApplicationTests : AbstractIntegrationTest() {
 	inner class HealthChecks {
 
 		private val mapper = jacksonObjectMapper()
+		private val baseRoute = "/$HEALTH_CHECKS_REQUEST_MAPPING_ROUTE"
 
 		@Test
 		fun `should ping`() {
 			mockMvc
-				.get("/_ping")
+				.get(baseRoute)
 				.andDo { print() }
 				.andExpectAll {
 					status { isOk() }
@@ -80,12 +82,12 @@ class ConsultingPerformanceMgmtApplicationTests : AbstractIntegrationTest() {
 		@Test
 		fun `should decode JSON response to data class predictably`() {
 			val data = 10
-			val obj = MainController.Companion.Sample(data)
+			val obj = HealthChecksController.Companion.Sample(data)
 			val expectedEncoded = buildJsonObject {
 				put("data", data)
 			}
 			val response = mockMvc
-				.get("/_ping/$data")
+				.get("$baseRoute/$data")
 				.andDo { print() }
 				.andExpectAll {
 					status { isOk() }
@@ -96,7 +98,7 @@ class ConsultingPerformanceMgmtApplicationTests : AbstractIntegrationTest() {
 					}
 				}
 				.andReturn()
-			val decoded: MainController.Companion.Sample = mapper.readValue(response.response.contentAsString)
+			val decoded: HealthChecksController.Companion.Sample = mapper.readValue(response.response.contentAsString)
 			assertEquals(obj, decoded)
 		}
 

@@ -26,6 +26,7 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
     private lateinit var messageRepository: MessageCrudRepository
 
     private val mapper = jacksonObjectMapper()
+    private val baseRoute = "/$MESSAGES_REQUEST_MAPPING_ROUTE"
 
     @Nested
     @DisplayName("Get messages")
@@ -35,7 +36,7 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
         fun `should get all messages`() {
             val expectedJsonList = messageRepository.findAll().map { mapper.writeValueAsString(it) }
             mockMvc
-                .get("/$MESSAGES_REQUEST_MAPPING_ROUTE")
+                .get(baseRoute)
                 .andDo { print() }
                 .andExpectAll {
                     status { isOk() }
@@ -54,9 +55,10 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
 
         @Test
         fun `should get specific message`() {
+            // TODO: Try to refactor test so that it doesn't depend on any seeded value
             val expectedMessage = messageRepository.findAll().first()
             val response = mockMvc
-                .get("/$MESSAGES_REQUEST_MAPPING_ROUTE/${expectedMessage.id}")
+                .get("$baseRoute/${expectedMessage.id}")
                 .andDo { print() }
                 .andExpectAll {
                     status { isOk() }
@@ -73,7 +75,7 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
         @Test
         fun `should not find nonexistent message`() {
             mockMvc
-                .get("/$MESSAGES_REQUEST_MAPPING_ROUTE/${UUID.randomUUID()}")
+                .get("$baseRoute/${UUID.randomUUID()}")
                 .andDo { print() }
                 .andExpectAll {
                     status { isOk() }
@@ -95,7 +97,7 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
         fun `should post message to database`() {
             val postMessage = Message(msg = "H E L L O")
             val response = mockMvc
-                .post("/$MESSAGES_REQUEST_MAPPING_ROUTE") {
+                .post(baseRoute) {
                     contentType = MediaType.APPLICATION_JSON
                     content = mapper.writeValueAsString(postMessage)
                     accept = MediaType.APPLICATION_JSON

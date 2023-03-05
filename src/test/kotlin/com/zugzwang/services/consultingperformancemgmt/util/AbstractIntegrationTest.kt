@@ -1,6 +1,5 @@
 package com.zugzwang.services.consultingperformancemgmt.util
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
@@ -13,7 +12,6 @@ import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest // Perform integration tests with the service actually spun up
 @AutoConfigureMockMvc // Use Spring DI to instantiate underlying MVC web framework object
-@EnableConfigurationProperties // Apply configuration properties in test class
 @TestPropertySource(locations = ["classpath:application-test.properties"]) // Point to test overrides
 @Testcontainers // Manages container lifecycle across tests
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD) // Indicate that each test requires resetting context to avoid side effects
