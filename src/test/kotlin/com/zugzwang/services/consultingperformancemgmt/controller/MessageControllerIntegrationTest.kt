@@ -73,9 +73,23 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
         }
 
         @Test
-        fun `should not find nonexistent message`() {
+        fun `should get handled exception when searching for nonexistent message`() {
+            val missingMessageId = UUID.randomUUID()
             mockMvc
-                .get("$baseRoute/${UUID.randomUUID()}")
+                .get("$baseRoute/$missingMessageId")
+                .andDo { print() }
+                .andExpectAll {
+                    status { isNotFound() }
+                    content {
+                        string("No message with ID $missingMessageId found!")
+                    }
+                }
+        }
+
+        @Test
+        fun `should get empty response when searching for nonexistent message on optional route`() {
+            mockMvc
+                .get("$baseRoute/${UUID.randomUUID()}/optional")
                 .andDo { print() }
                 .andExpectAll {
                     status { isOk() }

@@ -3,14 +3,18 @@ package com.zugzwang.services.consultingperformancemgmt.service
 import com.zugzwang.services.consultingperformancemgmt.model.Message
 import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageCrudRepository
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class MessageService(private val messageRepository: MessageCrudRepository) {
 
     fun getAllMessages(): Iterable<Message> = messageRepository.findAll()
 
-    fun getMessageById(messageId: UUID) = messageRepository.findById(messageId)
+    fun getMessageById(messageId: UUID): Message = messageRepository
+        .findById(messageId)
+        .orElseThrow { NoSuchElementException("No message with ID $messageId found!") }
+
+    fun getOptionalMessageById(messageId: UUID): Optional<Message> = messageRepository.findById(messageId)
 
     fun getMessagesByContent(content: String): Iterable<Message> = messageRepository.findAllByMsg(content)
 
