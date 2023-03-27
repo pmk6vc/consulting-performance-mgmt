@@ -1,6 +1,6 @@
 package com.zugzwang.services.consultingperformancemgmt.service
 
-import com.zugzwang.services.consultingperformancemgmt.model.Message
+import com.zugzwang.services.consultingperformancemgmt.model.MessageModel.Companion.Message
 import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageCrudRepository
 import org.springframework.stereotype.Service
 import java.util.*

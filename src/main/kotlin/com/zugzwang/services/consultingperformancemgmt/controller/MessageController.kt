@@ -1,9 +1,8 @@
 package com.zugzwang.services.consultingperformancemgmt.controller
 
-import com.zugzwang.services.consultingperformancemgmt.model.Message
+import com.zugzwang.services.consultingperformancemgmt.model.MessageModel.Companion.Message
 import com.zugzwang.services.consultingperformancemgmt.service.MessageService
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping

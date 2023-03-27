@@ -2,7 +2,7 @@ package com.zugzwang.services.consultingperformancemgmt.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.zugzwang.services.consultingperformancemgmt.model.Message
+import com.zugzwang.services.consultingperformancemgmt.model.MessageModel.Companion.Message
 import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageCrudRepository
 import com.zugzwang.services.consultingperformancemgmt.util.AbstractIntegrationTest
 import kotlinx.serialization.json.*
