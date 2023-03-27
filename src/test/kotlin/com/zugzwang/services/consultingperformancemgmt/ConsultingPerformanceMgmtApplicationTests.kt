@@ -7,20 +7,15 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 
-class ConsultingPerformanceMgmtApplicationTests : AbstractIntegrationTest() {
-
-	@Autowired
-	private lateinit var messageRepository: MessageCrudRepository
+class ConsultingPerformanceMgmtApplicationTests @Autowired constructor(
+	private val messageRepository: MessageCrudRepository,
+	@Value("\${spring.datasource.driver-class-name}") private val datasourceDriver: String,
+	@Value("\${server.port}") private val serverPort: String
+) : AbstractIntegrationTest() {
 
 	@Nested
 	@DisplayName("Spring config")
 	inner class SpringConfig {
-
-		@Value("\${spring.datasource.driver-class-name}")
-		lateinit var datasourceDriver: String
-
-		@Value("\${server.port}")
-		lateinit var serverPort: String
 
 		@Test
 		fun contextLoads() {

@@ -1,6 +1,6 @@
 package com.zugzwang.services.consultingperformancemgmt.controller
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.zugzwang.services.consultingperformancemgmt.model.MessageModel.Companion.Message
 import com.zugzwang.services.consultingperformancemgmt.repository.message.MessageCrudRepository
@@ -17,19 +17,16 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import java.util.UUID
 
-private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
+private class MessageControllerIntegrationTest @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val messageRepository: MessageCrudRepository,
+    private val mapper: ObjectMapper
+) : AbstractIntegrationTest() {
 
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @Autowired
-    private lateinit var messageRepository: MessageCrudRepository
-
-    private val mapper = jacksonObjectMapper()
     private val baseRoute = "/$MESSAGES_REQUEST_MAPPING_ROUTE"
 
     @Nested
-    @DisplayName("Get messages")
+    @DisplayName("GET /messages")
     inner class GetMessages {
 
         @Test
@@ -52,7 +49,11 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
                     }
                 }
         }
+    }
 
+    @Nested
+    @DisplayName("GET /message")
+    inner class GetMessage {
         @Test
         fun `should get specific message`() {
             // TODO: Try to refactor test so that it doesn't depend on any seeded value
@@ -100,12 +101,11 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
                     }
                 }
         }
-
     }
 
     @Nested
-    @DisplayName("Post message")
-    inner class PostMessage {
+    @DisplayName("POST /messages")
+    inner class PostMessages {
 
         @Test
         fun `should post message to database`() {
@@ -118,7 +118,7 @@ private class MessageControllerIntegrationTest : AbstractIntegrationTest() {
                 }
                 .andDo { print() }
                 .andExpectAll {
-                    status { isOk() }
+                    status { isCreated() }
                     content {
                         contentType(MediaType.APPLICATION_JSON)
                         jsonPath("$.msg") {

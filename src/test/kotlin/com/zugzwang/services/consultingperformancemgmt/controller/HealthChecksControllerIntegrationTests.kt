@@ -1,6 +1,6 @@
 package com.zugzwang.services.consultingperformancemgmt.controller
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.zugzwang.services.consultingperformancemgmt.util.AbstractIntegrationTest
 import kotlinx.serialization.json.buildJsonObject
@@ -15,16 +15,15 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import java.nio.charset.StandardCharsets
 
-class HealthChecksControllerIntegrationTests : AbstractIntegrationTest() {
-
-    @Autowired // Use Spring DI to create MVC
-    private lateinit var mockMvc: MockMvc // Enable hitting controller without actually making HTTP requests
+class HealthChecksControllerIntegrationTests @Autowired constructor(
+    private val mockMvc: MockMvc,
+    private val mapper: ObjectMapper
+) : AbstractIntegrationTest() {
 
     @Nested
     @DisplayName("Health checks")
     inner class HealthChecks {
 
-        private val mapper = jacksonObjectMapper()
         private val baseRoute = "/$HEALTH_CHECKS_REQUEST_MAPPING_ROUTE"
 
         @Test

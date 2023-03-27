@@ -18,6 +18,6 @@ class MessageService(private val messageRepository: MessageCrudRepository) {
 
     fun getMessagesByContent(content: String): Iterable<Message> = messageRepository.findAllByMsg(content)
 
-    fun post(message: Message) = messageRepository.save(message)
+    fun post(message: Message): Message = messageRepository.save(message)
 
 }
