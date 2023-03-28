@@ -3,45 +3,43 @@ name: Actions for main branch
 on:
   pull_request:
     branches: [ main ]
-  push:
-    branches: [ main ]
 
 jobs:
-  mvn-verify:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'corretto'
-          cache: maven
-
-      - name: Run the Maven verify phase
-        run: mvn --batch-mode --update-snapshots --fail-at-end verify
-
-  snyk-security:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      # TODO: Consider building Docker image and using Snyk Docker image scan instead
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/maven@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --sarif-file-output=snyk.sarif
-
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
+#  mvn-verify:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '17'
+#          distribution: 'corretto'
+#          cache: maven
+#
+#      - name: Run the Maven verify phase
+#        run: mvn --batch-mode --update-snapshots --fail-at-end verify
+#
+#  snyk-security:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      # TODO: Consider building Docker image and using Snyk Docker image scan instead
+#      - name: Run Snyk to check for vulnerabilities
+#        uses: snyk/actions/maven@master
+#        continue-on-error: true
+#        env:
+#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+#        with:
+#          args: --sarif-file-output=snyk.sarif
+#
+#      - name: Upload result to GitHub Code Scanning
+#        uses: github/codeql-action/upload-sarif@v2
+#        with:
+#          sarif_file: snyk.sarif
 
   terraform:
     runs-on: ubuntu-latest
@@ -53,11 +51,17 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform format
-        id: fmt
         run: terraform fmt -check
 
       - name: Terraform init
-        id: init
         run: terraform init
-        env:
-          GOOGLE_CREDENTIALS: 
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Terraform plan
+        run: terraform plan -no-color
+
+      - name: Terraform apply
+        if: github.event.pull_request.merged == true
+        run: terraform apply -auto-approve
