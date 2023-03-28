@@ -7,3 +7,7 @@ target
 
 # Env
 .env.local
+
+# Terraform
+**/.terraform
+*.tfvars

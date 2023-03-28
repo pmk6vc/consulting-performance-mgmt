@@ -32,6 +32,7 @@ services:
       postgres-db:
         condition: service_healthy
     environment:
+      - SPRING_PROFILE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pgdb:5432/${LOCAL_POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${LOCAL_POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${LOCAL_POSTGRES_PASSWORD}
