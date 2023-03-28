@@ -12,7 +12,7 @@ terraform {
 }
 
 provider "google" {
-  project     = var.gcp_project_id
+  project = var.gcp_project_id
 }
 
 module "secrets" {
@@ -24,9 +24,9 @@ module "secrets" {
 }
 
 module "cloud_sql" {
-  source         = "./modules/cloud_sql"
-  gcp_project_id = var.gcp_project_id
+  source           = "./modules/cloud_sql"
+  gcp_project_id   = var.gcp_project_id
   cloud_sql_region = var.cloud_sql_region
-  db_username    = module.secrets.db_username
-  db_password    = module.secrets.db_password
+  db_username      = module.secrets.db_username
+  db_password      = module.secrets.db_password
 }
