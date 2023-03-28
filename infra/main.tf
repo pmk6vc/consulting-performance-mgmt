@@ -30,8 +30,3 @@ module "cloud_sql" {
   db_username      = module.secrets.db_username
   db_password      = module.secrets.db_password
 }
-
-resource "google_storage_bucket" "dummy" {
-  name     = "test-bucket-random-1234567891"
-  location = "us-central1"
-}
