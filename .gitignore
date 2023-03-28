@@ -7,3 +7,9 @@ target
 
 # Env
 .env.local
+
+# Terraform
+**/.terraform
+*.tfvars
+# TODO: Shouldn't have this file anywhere - use CI/CD for resources instead
+creds.json
