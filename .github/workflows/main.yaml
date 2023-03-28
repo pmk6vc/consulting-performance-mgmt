@@ -3,6 +3,8 @@ name: Actions for main branch
 on:
   pull_request:
     branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
   mvn-verify:
@@ -79,7 +81,7 @@ jobs:
           TF_VAR_cloud_sql_region: ${{ vars.CLOUD_SQL_REGION }}
 
       - name: Terraform apply
-        if: github.event.pull_request.merged == true
+        if: github.event_name == 'push'
         working-directory: infra
         run: terraform apply -auto-approve
         env:
