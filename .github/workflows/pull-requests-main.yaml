@@ -54,9 +54,12 @@ jobs:
         working-directory: infra
         run: terraform fmt -check
 
+      # TODO: Check out keyless authentication for service accounts
       - name: Terraform init
         working-directory: infra
         run: terraform init
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}
 
       - name: Terraform validate
         working-directory: infra
