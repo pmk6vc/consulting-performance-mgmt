@@ -29,8 +29,8 @@ jobs:
       - name: Terraform create workspace
         working-directory: infra
         run: |
-          terraform workspace create "$TF_WORKSPACE_NAME"
-          export TF_WORKSPACE="$TF_WORKSPACE_NAME"
+          terraform workspace create $TF_WORKSPACE_NAME
+          export TF_WORKSPACE=$TF_WORKSPACE_NAME
 
       - name: Terraform apply
         working-directory: infra
