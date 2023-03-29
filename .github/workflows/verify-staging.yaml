@@ -43,6 +43,7 @@ jobs:
 
   terraform:
     runs-on: ubuntu-latest
+    environment: STAGING
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -67,7 +68,6 @@ jobs:
 
       - name: Terraform plan
         working-directory: infra
-        environment: STAGING
         run: terraform plan -no-color
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}

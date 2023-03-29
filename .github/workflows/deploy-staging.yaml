@@ -7,6 +7,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    environment: STAGING
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,7 +24,6 @@ jobs:
 
       - name: Terraform apply
         working-directory: infra
-        environment: STAGING
         run: terraform apply -auto-approve
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}
