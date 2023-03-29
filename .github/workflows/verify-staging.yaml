@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [ staging ]
 
+env:
+  GITHUB_ENVIRONMENT_NAME: STAGING
+  TF_WORKSPACE_NAME: staging
+
 jobs:
   mvn-verify:
     runs-on: ubuntu-latest
@@ -43,7 +47,7 @@ jobs:
 
   terraform:
     runs-on: ubuntu-latest
-    environment: STAGING
+    environment: $GITHUB_ENVIRONMENT_NAME
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -61,6 +65,12 @@ jobs:
         run: terraform init
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}
+
+      - name: Terraform create workspace
+        working-directory: infra
+        run: |
+          terraform workspace create "$TF_WORKSPACE_NAME"
+          export TF_WORKSPACE="$TF_WORKSPACE_NAME"
 
       - name: Terraform validate
         working-directory: infra
