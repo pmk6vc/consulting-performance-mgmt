@@ -71,6 +71,8 @@ jobs:
         run: |
           terraform workspace new $TF_WORKSPACE_NAME
           export TF_WORKSPACE=$TF_WORKSPACE_NAME
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}
 
       - name: Terraform validate
         working-directory: infra
