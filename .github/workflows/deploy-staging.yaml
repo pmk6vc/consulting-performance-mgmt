@@ -94,16 +94,22 @@ jobs:
         env:
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_CREDENTIALS }}
+
       - name: Deploy
+        id: deploy
         uses: google-github-actions/deploy-cloudrun@v1.0.1
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ vars.REGION }}
           image: ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           env_vars: |
-            PORT=$SERVICE_PORT
+            PORT=${{ env.SERVICE_PORT }}
             SPRING_PROFILE=staging
-            DB_CONNECTION_NAME=$DB_CONNECTION_STRING
+            DB_CONNECTION_NAME=${{ env.DB_CONNECTION_STRING }}
             GCP_PROJECT_ID=${{ vars.GCP_PROJECT_ID }}
             DB_USERNAME_SECRET=${{ vars.DB_USERNAME_SECRET }}
             DB_USERNAME_SECRET_VERSION=${{ vars.DB_USERNAME_SECRET_VERSION }}
@@ -111,3 +117,6 @@ jobs:
             DB_PASSWORD_SECRET_VERSION=${{ vars.DB_PASSWORD_SECRET_VERSION }}
         env:
           DB_CONNECTION_STRING: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
+
+      - name: Show URL
+        run: echo ${{ steps.deploy.outputs.url }}
