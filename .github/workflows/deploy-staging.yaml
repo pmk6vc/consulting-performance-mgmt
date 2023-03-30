@@ -122,6 +122,7 @@ jobs:
             DB_PASSWORD_SECRET_VERSION=${{ vars.DB_PASSWORD_SECRET_VERSION }}
         env:
           DB_CONNECTION_STRING: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
+          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
       - name: Show URL
         run: echo ${{ steps.deploy.outputs.url }}
