@@ -54,14 +54,14 @@ jobs:
       - name: Fetch DB connection string
         id: db
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: echo "db_connection_string=$(terraform output db_connection_string)" >> "$GITHUB_OUTPUT"
+        run: echo "db_connection_string=$(terraform output db_connection_string | tr -d '"')" >> "$GITHUB_OUTPUT"
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}
 
       - name: Fetch artifact registry repo name
         id: repo
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: echo "artifact_repo=$(terraform output artifact_registry_repo)" >> "$GITHUB_OUTPUT"
+        run: echo "artifact_repo=$(terraform output artifact_registry_repo | tr -d '"')" >> "$GITHUB_OUTPUT"
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}
 
@@ -103,7 +103,7 @@ jobs:
 
       # TODO: Find a way to delete all images in repo first
       - name: Push Docker image to artifact registry
-        run: docker push ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/$ARTIFACT_REPO_NAME/$SERVICE_NAME:${{ github.sha }}
+        run: docker push ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/$SERVICE_NAME:${{ github.sha }}
         env:
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
