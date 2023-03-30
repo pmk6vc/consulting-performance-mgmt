@@ -79,7 +79,7 @@ jobs:
           context: .
           build-args: |
             SERVER_PORT=${{ env.SERVICE_PORT }}
-          tags: ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/$ARTIFACT_REPO_NAME/$SERVICE_NAME:${{ github.sha }}
+          tags: ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/$SERVICE_NAME:${{ github.sha }}
           push: false
         env:
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
@@ -99,7 +99,7 @@ jobs:
 
       # TODO: Find a way to delete all images in repo first
       - name: Push Docker image to artifact registry
-        run: docker push ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/$ARTIFACT_REPO_NAME/$SERVICE_NAME:${{ github.sha }}
+        run: docker push ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/$SERVICE_NAME:${{ github.sha }}
         env:
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
