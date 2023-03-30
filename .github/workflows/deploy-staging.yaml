@@ -73,20 +73,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: DUMMY
-        run: echo "$OUTPUT1 $OUTPUT2"
-        env:
-          OUTPUT1: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
-          OUTPUT2: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
-
       - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           build-args: |
             SERVER_PORT=${{ env.SERVICE_PORT }}
-          tags: gcr.io/${{ vars.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          tags: ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/$ARTIFACT_REPO_NAME/$SERVICE_NAME:${{ github.sha }}
           push: false
+        env:
+          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
@@ -103,7 +99,7 @@ jobs:
 
       # TODO: Find a way to delete all images in repo first
       - name: Push Docker image to artifact registry
-        run: docker push ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/$SERVICE_NAME:${{ github.sha }}
+        run: docker push ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/$ARTIFACT_REPO_NAME/$SERVICE_NAME:${{ github.sha }}
         env:
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
