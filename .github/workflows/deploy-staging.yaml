@@ -23,19 +23,19 @@ jobs:
 
       # TODO: Check out keyless authentication for service accounts
       - name: Terraform init
-        working-directory: $TF_WORKING_DIR
+        working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}
 
       - name: Terraform select workspace
-        working-directory: $TF_WORKING_DIR
+        working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform workspace select $TF_WORKSPACE_NAME
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}
 
       - name: Terraform apply
-        working-directory: $TF_WORKING_DIR
+        working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform apply -auto-approve
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_CREDENTIALS }}
@@ -47,7 +47,7 @@ jobs:
           TF_VAR_region: ${{ vars.REGION }}
 
 #      - name: Fetch required Terraform outputs
-#        working-directory: $TF_WORKING_DIR
+#        working-directory: ${{ env.TF_WORKING_DIR }}
   deploy:
     needs: terraform
     runs-on: ubuntu-latest
@@ -72,8 +72,8 @@ jobs:
         with:
           context: .
           build-args: |
-            SERVER_PORT=$SERVICE_PORT
-          tags: gcr.io/${{ vars.GCP_PROJECT_ID }}/$SERVICE_NAME:${{ github.sha }}
+            SERVER_PORT=${{ env.SERVICE_PORT }}
+          tags: gcr.io/${{ vars.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           push: false
 
       - name: Push Docker image to artifact registry
@@ -82,8 +82,8 @@ jobs:
 #        - name: Deploy
 #          uses: google-github-actions/deploy-cloudrun@v1.0.1
 #          with:
-#            service: $SERVICE_NAME
-#            image: gcr.io/${{ vars.GCP_PROJECT_ID }}/$SERVICE_NAME:${{ github.sha }}
+#            service: ${{ env.SERVICE_NAME }}
+#            image: gcr.io/${{ vars.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
 #            env_vars: |
 #              PORT=$SERVICE_PORT
 #              SPRING_PROFILE=staging
