@@ -73,14 +73,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Login to Google artifact registry
+      - name: Login to registry
         uses: docker/login-action@v2
         with:
           registry: ${{ vars.REGION }}-docker.pkg.dev
           username: _json_key
           password: ${{ secrets.GCP_SA_CREDENTIALS }}
 
-      - name: Build and push Docker image
+      # TODO: Find a way to delete all images in repo first
+      - name: Build and push Docker image to registry
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -93,38 +94,20 @@ jobs:
         env:
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
-#      - name: Authenticate to Google Cloud
-#        uses: google-github-actions/auth@v1
-#        with:
-#          credentials_json: ${{ secrets.GCP_SA_CREDENTIALS }}
-
-#      - name: Setup gcloud
-#        uses: google-github-actions/setup-gcloud@v1.1.0
-#        with:
-#          project_id: ${{ vars.GCP_PROJECT_ID }}
-
-#      - name: Authorize Docker push
-#        run: gcloud auth configure-docker
-
-      # TODO: Find a way to delete all images in repo first
-#      - name: Push Docker image to artifact registry
-#        run: docker push ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-#        env:
-#          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
-
-#      - name: Deploy
-#        uses: google-github-actions/deploy-cloudrun@v1.0.1
-#        with:
-#          service: ${{ env.SERVICE_NAME }}
-#          image: gcr.io/${{ vars.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-#          env_vars: |
-#            PORT=$SERVICE_PORT
-#            SPRING_PROFILE=staging
-#            DB_CONNECTION_NAME=$DB_CONNECTION_STRING
-#            GCP_PROJECT_ID=${{ vars.GCP_PROJECT_ID }}
-#            DB_USERNAME_SECRET=${{ vars.DB_USERNAME_SECRET }}
-#            DB_USERNAME_SECRET_VERSION=${{ vars.DB_USERNAME_SECRET_VERSION }}
-#            DB_PASSWORD_SECRET=${{ vars.DB_PASSWORD_SECRET }}
-#            DB_PASSWORD_SECRET_VERSION=${{ vars.DB_PASSWORD_SECRET_VERSION }}
-#        env:
-#          DB_CONNECTION_STRING: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
+      - name: Deploy
+        uses: google-github-actions/deploy-cloudrun@v1.0.1
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ vars.REGION }}
+          image: ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          env_vars: |
+            PORT=$SERVICE_PORT
+            SPRING_PROFILE=staging
+            DB_CONNECTION_NAME=$DB_CONNECTION_STRING
+            GCP_PROJECT_ID=${{ vars.GCP_PROJECT_ID }}
+            DB_USERNAME_SECRET=${{ vars.DB_USERNAME_SECRET }}
+            DB_USERNAME_SECRET_VERSION=${{ vars.DB_USERNAME_SECRET_VERSION }}
+            DB_PASSWORD_SECRET=${{ vars.DB_PASSWORD_SECRET }}
+            DB_PASSWORD_SECRET_VERSION=${{ vars.DB_PASSWORD_SECRET_VERSION }}
+        env:
+          DB_CONNECTION_STRING: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
