@@ -99,6 +99,12 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_CREDENTIALS }}
 
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      # TODO: Figure out --allow-unauthenticated
       - name: Deploy
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v1.0.1
@@ -107,7 +113,6 @@ jobs:
           region: ${{ vars.REGION }}
           image: ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           env_vars: |
-            PORT=${{ env.SERVICE_PORT }}
             SPRING_PROFILE=staging
             DB_CONNECTION_NAME=${{ env.DB_CONNECTION_STRING }}
             GCP_PROJECT_ID=${{ vars.GCP_PROJECT_ID }}
