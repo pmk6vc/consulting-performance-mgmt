@@ -65,11 +65,15 @@ jobs:
           tags: gcr.io/${{ vars.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           push: false
 
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_CREDENTIALS }}
+
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v1.1.0
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_CREDENTIALS }}
 
       - name: Authorize Docker push
         run: gcloud auth configure-docker
