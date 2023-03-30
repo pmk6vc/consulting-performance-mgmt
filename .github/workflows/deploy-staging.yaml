@@ -23,6 +23,8 @@ jobs:
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
 
       # TODO: Check out keyless authentication for service accounts
       - name: Terraform init
@@ -52,7 +54,7 @@ jobs:
       - name: Fetch DB connection string
         id: db
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: echo "db_connection_string=$(terraform output db_connection_string | tr -d '"')" >> "$GITHUB_OUTPUT"
+        run: echo "db_connection_string=$(terraform output db_connection_string)" >> "$GITHUB_OUTPUT"
 
       - name: Fetch artifact registry repo name
         id: repo
