@@ -26,7 +26,13 @@ module "secrets" {
 module "cloud_sql" {
   source           = "./modules/cloud_sql"
   gcp_project_id   = var.gcp_project_id
-  cloud_sql_region = var.cloud_sql_region
+  cloud_sql_region = var.region
   db_username      = module.secrets.db_username
   db_password      = module.secrets.db_password
+}
+
+module "artifact_registry" {
+  source               = "./modules/artifact_registry"
+  gcp_project_id       = var.gcp_project_id
+  registry_repo_region = var.region
 }
