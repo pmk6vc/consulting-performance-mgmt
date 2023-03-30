@@ -73,35 +73,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build Docker image
+      - name: Login to Google artifact registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ vars.REGION }}-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.GCP_SA_CREDENTIALS }}
+
+      - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           build-args: |
             SERVER_PORT=${{ env.SERVICE_PORT }}
-          tags: ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          push: false
+          tags: | 
+            ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+            ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:latest
+          push: true
         env:
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_SA_CREDENTIALS }}
+#      - name: Authenticate to Google Cloud
+#        uses: google-github-actions/auth@v1
+#        with:
+#          credentials_json: ${{ secrets.GCP_SA_CREDENTIALS }}
 
-      - name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@v1.1.0
-        with:
-          project_id: ${{ vars.GCP_PROJECT_ID }}
+#      - name: Setup gcloud
+#        uses: google-github-actions/setup-gcloud@v1.1.0
+#        with:
+#          project_id: ${{ vars.GCP_PROJECT_ID }}
 
-      - name: Authorize Docker push
-        run: gcloud auth configure-docker
+#      - name: Authorize Docker push
+#        run: gcloud auth configure-docker
 
       # TODO: Find a way to delete all images in repo first
-      - name: Push Docker image to artifact registry
-        run: docker push ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-        env:
-          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
+#      - name: Push Docker image to artifact registry
+#        run: docker push ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+#        env:
+#          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
 
 #      - name: Deploy
 #        uses: google-github-actions/deploy-cloudrun@v1.0.1
