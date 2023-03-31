@@ -20,6 +20,9 @@ class HealthChecksController {
     @GetMapping
     fun ping() = "Ping! I'm healthy!"
 
+    @GetMapping("vivaldi")
+    fun vivaldi() = "Hello Vivaldi! This is a demo"
+
     @GetMapping("{data}")
     fun pingJson(@PathVariable data: Int) = Sample(data)
 
