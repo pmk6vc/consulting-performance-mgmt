@@ -76,6 +76,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Get registry image name
+        id: image_name
+        run: echo "IMAGE_NAME=${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}" >> $GITHUB_OUTPUT
+        env:
+          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
@@ -88,15 +94,14 @@ jobs:
 
       - name: Delete images in registry
         run: |
-          IMAGE=$( ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }})
-          if [[ $(gcloud artifacts docker images list $IMAGE) ]]; then
-            echo "At least one version of $IMAGE version found - deleting"
-            gcloud artifacts docker images delete $IMAGE
+          if [[ $(gcloud artifacts docker images list ${{ env.IMAGE }}) ]]; then
+            echo "At least one version of ${{ env.IMAGE }} version found - deleting"
+            gcloud artifacts docker images delete ${{ env.IMAGE }}
           else
-            echo "$IMAGE not found - nothing to delete"
+            echo "${{ env.IMAGE }} not found - nothing to delete"
           fi
         env:
-          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
+          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
       - name: Authorize Docker to push to registry
         uses: docker/login-action@v2
@@ -111,12 +116,13 @@ jobs:
           context: .
           build-args: |
             SERVER_PORT=${{ env.SERVICE_PORT }}
-          tags: | 
-            ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-            ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:latest
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
           push: true
         env:
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
+          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
       # TODO: Figure out --allow-unauthenticated
       - name: Deploy
@@ -125,7 +131,7 @@ jobs:
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ vars.REGION }}
-          image: ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          image: ${{ env.IMAGE }}:${{ github.sha }}
           env_vars: |
             SPRING_PROFILE=gcp
             DB_CONNECTION_NAME=${{ env.DB_CONNECTION_STRING }}
@@ -143,6 +149,7 @@ jobs:
         env:
           DB_CONNECTION_STRING: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
+          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
       - name: Show URL
         run: echo ${{ steps.deploy.outputs.url }}
