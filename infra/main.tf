@@ -38,6 +38,6 @@ module "artifact_registry" {
 }
 
 resource "google_storage_bucket" "demo-bucket" {
-  name = "vivaldi-demo-${terraform.workspace}"
+  name     = "vivaldi-demo-${terraform.workspace}"
   location = var.region
 }
