@@ -8,7 +8,7 @@ env:
   TF_WORKSPACE_NAME: staging
   TF_WORKING_DIR: infra
   SERVICE_NAME: consulting-performance-mgmt-staging
-  SERVICE_PORT: 8080 # Note that this needs to match Cloud Run service port configuration
+  SERVICE_PORT: 8080
 
 jobs:
   terraform:
@@ -120,6 +120,12 @@ jobs:
             DB_USERNAME_SECRET_VERSION=${{ vars.DB_USERNAME_SECRET_VERSION }}
             DB_PASSWORD_SECRET=${{ vars.DB_PASSWORD_SECRET }}
             DB_PASSWORD_SECRET_VERSION=${{ vars.DB_PASSWORD_SECRET_VERSION }}
+          flags: |
+            --min-instances=0
+            --max-instances=1
+            --memory=512Mi
+            --cpu=1
+            --port=${{ env.SERVICE_PORT }}
         env:
           DB_CONNECTION_STRING: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
