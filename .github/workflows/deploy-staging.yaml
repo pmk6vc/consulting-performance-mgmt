@@ -76,14 +76,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Login to registry
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_CREDENTIALS }}
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      - name: Delete images in registry
+        run: |
+          IMAGE=$( ${{ vars.REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }})
+          if [[ $(gcloud artifacts docker images list $IMAGE) ]]; then
+            echo "At least one version of $IMAGE version found - deleting"
+            gcloud artifacts docker images delete $IMAGE
+          else
+            echo "$IMAGE not found - nothing to delete"
+          fi
+        env:
+          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
+
+      - name: Authorize Docker to push to registry
         uses: docker/login-action@v2
         with:
           registry: ${{ vars.REGION }}-docker.pkg.dev
           username: _json_key
           password: ${{ secrets.GCP_SA_CREDENTIALS }}
 
-      # TODO: Find a way to delete all images in repo first
       - name: Build and push Docker image to registry
         uses: docker/build-push-action@v4
         with:
@@ -96,16 +117,6 @@ jobs:
           push: true
         env:
           ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_SA_CREDENTIALS }}
-
-      - name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@v1.1.0
-        with:
-          project_id: ${{ vars.GCP_PROJECT_ID }}
 
       # TODO: Figure out --allow-unauthenticated
       - name: Deploy
