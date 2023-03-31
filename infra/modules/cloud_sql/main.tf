@@ -17,6 +17,10 @@ resource "google_sql_database_instance" "db" {
     disk_size = 20
     disk_autoresize = true
     disk_autoresize_limit = 25
+    database_flags {
+      name  = "max_connections"
+      value = "50"
+    }
   }
 }
 
