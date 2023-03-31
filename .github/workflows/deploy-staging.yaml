@@ -121,7 +121,6 @@ jobs:
             ${{ env.IMAGE }}:latest
           push: true
         env:
-          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
       # TODO: Figure out --allow-unauthenticated
@@ -148,7 +147,6 @@ jobs:
             --port=${{ env.SERVICE_PORT }}
         env:
           DB_CONNECTION_STRING: ${{ needs.terraform.outputs.DB_CONNECTION_STRING }}
-          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
       - name: Show URL
