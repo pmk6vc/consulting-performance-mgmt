@@ -4,6 +4,9 @@ on:
   push:
     branches: [ staging ]
 
+# TODO: Figure out how to get service port modifications to work
+# The service port can be changed in theory, but the deployment fails because the deploy time greatly increases when the port is anything other than default 8080
+# Cloud Run has a strict requirement to get the service listening to passed port within 4min, which fails for anything other than default
 env:
   TF_WORKSPACE_NAME: staging
   TF_WORKING_DIR: infra
