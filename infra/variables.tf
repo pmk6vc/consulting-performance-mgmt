@@ -26,7 +26,7 @@ variable "db_password_secret_version" {
 }
 
 # Cloud SQL config
-variable "cloud_sql_region" {
-  description = "Region for Cloud SQL DB instance"
+variable "region" {
+  description = "Region for cloud resources"
   type        = string
 }
