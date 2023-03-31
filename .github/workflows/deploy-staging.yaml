@@ -123,7 +123,7 @@ jobs:
           flags: |
             --min-instances=0
             --max-instances=1
-            --memory=128Mi
+            --memory=512Mi
             --cpu=1
             --port=${{ env.SERVICE_PORT }}
         env:
