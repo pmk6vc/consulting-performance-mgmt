@@ -36,3 +36,8 @@ module "artifact_registry" {
   gcp_project_id       = var.gcp_project_id
   registry_repo_region = var.region
 }
+
+resource "google_storage_bucket" "demo-bucket" {
+  name     = "vivaldi-demo-${terraform.workspace}"
+  location = var.region
+}
