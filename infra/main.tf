@@ -23,13 +23,13 @@ module "secrets" {
   db_password_secret_version = var.db_password_secret_version
 }
 
-module "cloud_sql" {
-  source           = "./modules/cloud_sql"
-  gcp_project_id   = var.gcp_project_id
-  cloud_sql_region = var.region
-  db_username      = module.secrets.db_username
-  db_password      = module.secrets.db_password
-}
+#module "cloud_sql" {
+#  source           = "./modules/cloud_sql"
+#  gcp_project_id   = var.gcp_project_id
+#  cloud_sql_region = var.region
+#  db_username      = module.secrets.db_username
+#  db_password      = module.secrets.db_password
+#}
 
 module "artifact_registry" {
   source               = "./modules/artifact_registry"
